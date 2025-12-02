@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ball Corporation – Máquina de Sorteio</title>
+<style>
+:root {
+  --ball-blue: #1140ff;
+  --ball-light-blue: #6fa0ff;
+  --ball-white: #ffffff;
+  --ball-anim-duration: 0.6s;
+}
+body {
+  margin:0; font-family:Arial;
+  background:#000814; color:white;
+  display:flex; justify-content:center; align-items:center;
+  height:100vh; padding:20px;
+}
+.card {
+  background:#0f172a; border-radius:20px; padding:20px;
+  width:100%; max-width:500px;
+  border:1px solid #2a3b5f;
+}
+.header { display:flex; gap:10px; align-items:center; margin-bottom:20px; }
+.header img { height:50px; }
+form { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:15px;}
+input { padding:6px; border-radius:8px; border:1px solid #3a4b6f; background:#1e293b; color:white; }
+.actions { display:flex; gap:10px; margin-bottom:10px; }
+button {
+  flex:1; padding:10px; border-radius:8px; border:none; cursor:pointer;
+  font-weight:bold;
+}
+.btn-primary { background:#1140ff; color:white; }
+.btn-secondary { background:#1e293b; color:white; border:1px solid #475569; }
+.drum { min-height:80px; background:#001226; border-radius:12px; padding:10px;
+       display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+.ball {
+  width:40px; height:40px; border-radius:50%;
+  background:radial-gradient(circle, white, #6fa0ff 40%, #1140ff 80%);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:bold; animation:pop var(--ball-anim-duration) ease-out;
+}
+@keyframes pop {
+  from { transform:scale(0.5); opacity:0; }
+  to   { transform:scale(1); opacity:1; }
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <img src="ball-logo.png"/>
+    <h2>Máquina de Sorteio</h2>
+  </div>
+
+  <form>
+    <input id="min" type="number" value="1" min="1" max="100"/>
+    <input id="max" type="number" value="60" min="1" max="100"/>
+    <input id="qtd" type="number" value="6" min="1"/>
+    <input id="duracao" type="number" value="0.6" min="0.1" step="0.1"/>
+  </form>
+
+  <div class="actions">
+    <button class="btn-primary" id="btn-sortear">Sortear</button>
+    <button class="btn-secondary" id="btn-limpar">Limpar</button>
+  </div>
+
+  <div id="drum" class="drum"></div>
+</div>
+
+<script>
+function $(id){ return document.getElementById(id); }
+
+$("btn-sortear").onclick = () => {
+  let min = parseInt($("min").value),
+      max = parseInt($("max").value),
+      qtd = parseInt($("qtd").value),
+      dur = parseFloat($("duracao").value);
+  document.documentElement.style.setProperty("--ball-anim-duration", dur+"s");
+  const nums=[], set=new Set();
+  while(nums.length<qtd){
+    let n=Math.floor(Math.random()*(max-min+1))+min;
+    if(!set.has(n)){ set.add(n); nums.push(n); }
+  }
+  nums.sort((a,b)=>a-b);
+  $("drum").innerHTML="";
+  nums.forEach(n=>{
+    let b=document.createElement("div");
+    b.className="ball"; b.textContent=n;
+    $("drum").appendChild(b);
+  });
+};
+$("btn-limpar").onclick = ()=>{ $("drum").innerHTML=""; };
+</script>
+</body>
+</html>
