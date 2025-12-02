@@ -8,13 +8,18 @@
 <style>
 :root {
   --ball-blue: #1140ff;
-  --ball-light-blue: #6fa0ff;
+  --ball-light-blue: #60a5fa;
   --ball-white: #ffffff;
 }
 
 /* FULL SCREEN */
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
   font-family: Arial, sans-serif;
   background: #000814;
   color: white;
@@ -23,10 +28,9 @@ body {
   align-items: center;
   min-height: 100vh;
   height: 100vh;
-  padding: 0;
-  overflow: hidden;
 }
 
+/* CARD CENTRAL */
 .card {
   background: #0f172a;
   border-radius: 20px;
@@ -47,6 +51,10 @@ body {
 
 .header img {
   height: 55px;
+}
+
+.header h2 {
+  margin: 0;
 }
 
 /* FORMULÁRIO */
@@ -101,7 +109,7 @@ button {
 }
 
 .btn-primary:hover {
-  filter: brightness(1.1);
+  filter: brightness(1.08);
 }
 
 .btn-secondary {
@@ -124,14 +132,14 @@ button {
   overflow: hidden;
 }
 
-/* LATINHA FINAL (resultado) */
+/* LATINHA FINAL (RESULTADO) */
 .final-can {
   width: 65px;
   height: 95px;
   border-radius: 18px;
   background: linear-gradient(180deg, #1d4ed8 0%, #2563eb 40%, #1d4ed8 100%);
-  border: 2px solid #60a5fa;
-  box-shadow: 0 0 16px rgba(37, 99, 235, 0.8);
+  border: 2px solid var(--ball-light-blue);
+  box-shadow: 0 0 16px rgba(37,99,235,0.8);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -143,7 +151,7 @@ button {
   animation: pop 0.4s ease-out forwards;
 }
 
-/* topo prateado da latinha */
+/* topo prateado da latinha final */
 .final-can::before {
   content: "";
   position: absolute;
@@ -156,7 +164,7 @@ button {
   opacity: 0.9;
 }
 
-/* brilho lateral */
+/* brilho lateral da latinha final */
 .final-can::after {
   content: "";
   position: absolute;
@@ -168,15 +176,15 @@ button {
   background: rgba(239,246,255,0.35);
 }
 
-/* LATINHAS DA ANIMAÇÃO */
+/* LATINHAS DA ANIMAÇÃO (SPIN) */
 .spin-can {
   position: absolute;
   width: 55px;
   height: 85px;
   border-radius: 16px;
   background: linear-gradient(180deg, #1d4ed8 0%, #2563eb 40%, #1d4ed8 100%);
-  border: 1px solid #60a5fa;
-  box-shadow: 0 0 12px rgba(37, 99, 235, 0.7);
+  border: 1px solid var(--ball-light-blue);
+  box-shadow: 0 0 12px rgba(37,99,235,0.7);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -200,7 +208,7 @@ button {
   opacity: 0.8;
 }
 
-/* brilho lateral */
+/* brilho lateral da latinha animada */
 .spin-can::after {
   content: "";
   position: absolute;
@@ -293,11 +301,11 @@ button {
 </div>
 
 <script>
-// Atalho
+// Atalhos
 function $(id){ return document.getElementById(id); }
 function random(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
-// ÁUDIO – som de tambor
+// ÁUDIO – som de tambor com Web Audio
 let audioCtx = null;
 function playDrumHit(){
   try {
@@ -310,7 +318,7 @@ function playDrumHit(){
     osc.type = "sine";
     osc.frequency.setValueAtTime(120, audioCtx.currentTime);
 
-    gain.gain.setValueAtTime(0.9, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
 
     osc.connect(gain);
@@ -319,11 +327,11 @@ function playDrumHit(){
     osc.start();
     osc.stop(audioCtx.currentTime + 0.25);
   } catch(e){
-    // se áudio falhar, só ignora
+    // se não puder tocar som (bloqueio do navegador), apenas ignora
   }
 }
 
-// controla texto "segundo/segundos"
+// "segundo" / "segundos"
 const duracaoInput = $("duracao");
 const duracaoUnidade = $("duracao-unidade");
 
@@ -334,7 +342,7 @@ function atualizarUnidade(){
 duracaoInput.addEventListener("input", atualizarUnidade);
 atualizarUnidade();
 
-// animação estilo bingo com latinhas
+// animação com latinhas + tremida + som
 function animateSpinShake(duration){
   const drum = $("drum");
   drum.innerHTML = "";
@@ -349,6 +357,7 @@ function animateSpinShake(duration){
 
     c.style.left = random(10, w-65) + "px";
     c.style.top  = random(5,  h-90) + "px";
+
     c.textContent = random(1,99);
 
     drum.appendChild(c);
@@ -388,6 +397,11 @@ $("btn-sortear").onclick = async () => {
   }
   if (dur < 1 || dur > 15) {
     alert("A duração da animação deve ser entre 1 e 15 segundos.");
+    return;
+  }
+  // impedir caso intervalo seja menor que qtd
+  if ((max - min + 1) < qtd) {
+    alert("O intervalo é menor que a quantidade de bolas.");
     return;
   }
 
