@@ -10,8 +10,6 @@
   --blue1: #0038a8;
   --blue2: #0f4fdc;
   --blue3: #4f8dff;
-  --silver1: #e5e7eb;
-  --silver2: #9ca3af;
   --white: #ffffff;
 }
 
@@ -44,22 +42,30 @@ body {
   overflow: hidden;
 }
 
-/* BOTÃO SORTAR DE NOVO */
-#retry {
-  background: #c1121f;
-  color: white;
-  font-weight: bold;
-  padding: 14px 28px;
-  border: none;
+/* BOTÕES */
+.btn {
+  padding: 12px 26px;
   border-radius: 10px;
-  cursor: pointer;
+  border: 2px solid #0f4fdc;
+  background: white;
+  color: #0f4fdc;
   font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
   display: none;
+  margin: 5px;
   transition: 0.2s;
 }
 
-#retry:hover {
-  background: #ff1e2b;
+.btn:hover {
+  background: #dbe8ff;
+}
+
+/* LAYOUT DOS BOTÕES */
+#botoes {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
 }
 
 /* LATA FINAL */
@@ -89,7 +95,7 @@ body {
   height: 14px;
   border-radius: 999px;
   background: radial-gradient(circle at 50% 0,
-    var(--white), var(--silver1) 40%, var(--silver2) 70%, #4b5563 100%);
+    var(--white), #e5e7eb 40%, #9ca3af 70%, #4b5563 100%);
   top: -8px;
 }
 
@@ -118,7 +124,7 @@ body {
   height: 12px;
   border-radius: 999px;
   background: radial-gradient(circle at 50% 0,
-    var(--white), var(--silver1) 40%, var(--silver2) 70%, #4b5563 100%);
+    var(--white), #e5e7eb 40%, #9ca3af 70%, #4b5563 100%);
   top: -6px;
 }
 
@@ -139,12 +145,16 @@ body {
 <body>
 
 <div id="arena"></div>
-<button id="retry" onclick="sortearDeNovo()">🔁 Sortear de novo</button>
+
+<div id="botoes">
+  <button id="retry" class="btn" onclick="sortearDeNovo()">🔁 Sortear de novo</button>
+  <button id="back" class="btn" onclick="voltar()">⬅ Voltar</button>
+</div>
 
 <script>
-function getParam(nome) {
+function getParam(id) {
   const url = new URLSearchParams(window.location.search);
-  return parseInt(url.get(nome));
+  return parseInt(url.get(id));
 }
 
 function random(min, max) {
@@ -172,7 +182,7 @@ function tambor() {
 async function animacao(tempo) {
   const arena = document.getElementById("arena");
 
-  const intervalo = setInterval(() => {
+  const loop = setInterval(() => {
     const lata = document.createElement("div");
     lata.className = "spin-can";
     lata.style.left = random(10, arena.clientWidth - 70) + "px";
@@ -185,11 +195,11 @@ async function animacao(tempo) {
     setTimeout(() => lata.remove(), 260);
   }, 80);
 
-  return new Promise(res => {
+  return new Promise(resolve => {
     setTimeout(() => {
-      clearInterval(intervalo);
+      clearInterval(loop);
       arena.innerHTML = "";
-      res();
+      resolve();
     }, tempo * 1000);
   });
 }
@@ -225,12 +235,18 @@ async function iniciar() {
   });
 
   document.getElementById("retry").style.display = "block";
+  document.getElementById("back").style.display = "block";
 }
 
-/* BOTÃO SORTAR DE NOVO */
+/* BOTÃO SORTEAR DE NOVO */
 function sortearDeNovo() {
   const params = window.location.search;
   window.location.href = "resultado.html" + params;
+}
+
+/* VOLTAR */
+function voltar() {
+  window.location.href = "index.html";
 }
 
 iniciar();
