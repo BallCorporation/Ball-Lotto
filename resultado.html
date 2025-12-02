@@ -75,7 +75,7 @@ body {
   margin: 10px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;      /* conteúdo centralizado verticalmente */
   align-items: center;
   background-image: linear-gradient(90deg,
     var(--blue1), var(--blue2), var(--blue3), var(--blue2), var(--blue1));
@@ -98,19 +98,19 @@ body {
     var(--white), #e5e7eb 40%, #9ca3af 70%, #4b5563 100%);
 }
 
-/* LOGO ENTRE TAMPA E NÚMERO */
+/* LOGO ACIMA DO NÚMERO (RESULTADO) */
 .final-can img.ball-logo {
-  width: 55%;
-  margin-top: 18px; /* distância da tampa */
+  width: 50%;
+  margin-bottom: 6px;          /* espaço entre logo e número */
   filter: drop-shadow(0 0 3px #000);
 }
 
-/* NÚMERO */
+/* NÚMERO CENTRALIZADO */
 .final-can .num {
-  margin-bottom: 15px;
+  margin: 0;
 }
 
-/* LATAS DA ANIMAÇÃO */
+/* LATINHAS DA ANIMAÇÃO */
 .spin-can {
   position: absolute;
   width: 65px;
@@ -122,7 +122,7 @@ body {
   animation: spin 0.3s linear forwards;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;      /* conteúdo centralizado verticalmente */
   align-items: center;
   color: white;
   font-size: 1.2rem;
@@ -141,16 +141,16 @@ body {
     var(--white), #e5e7eb 40%, #9ca3af 70%, #4b5563 100%);
 }
 
-/* LOGO NA ANIMAÇÃO */
+/* LOGO ACIMA DO NÚMERO (ANIMAÇÃO) */
 .spin-can img.ball-logo {
   width: 45%;
-  margin-top: 12px;
+  margin-bottom: 4px;
   filter: drop-shadow(0 0 2px #000);
 }
 
-/* NÚMERO */
+/* NÚMERO NA ANIMAÇÃO */
 .spin-can .num {
-  margin-bottom: 10px;
+  margin: 0;
 }
 
 /* ANIMAÇÕES */
@@ -242,9 +242,9 @@ async function animacao(tempo) {
 
 /* SORTEIO FINAL */
 async function iniciar() {
-  const min = getParam("min");
-  const max = getParam("max");
-  const qtd = getParam("qtd");
+  const min   = getParam("min");
+  const max   = getParam("max");
+  const qtd   = getParam("qtd");
   const tempo = getParam("tempo");
 
   await animacao(tempo);
