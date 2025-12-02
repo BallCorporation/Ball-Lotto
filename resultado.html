@@ -47,7 +47,7 @@ body {
   padding: 12px 26px;
   border-radius: 10px;
   border: 2px solid #0f4fdc;
-  background: white;
+  background: #ffffff;
   color: #0f4fdc;
   font-size: 1rem;
   font-weight: bold;
@@ -61,14 +61,12 @@ body {
   background: #dbe8ff;
 }
 
-/* LAYOUT DOS BOTÕES */
 #botoes {
   display: flex;
   gap: 12px;
-  justify-content: center;
 }
 
-/* LATA FINAL */
+/* LATINHAS (RESULTADO FINAL) */
 .final-can {
   position: relative;
   width: 90px;
@@ -76,56 +74,83 @@ body {
   border-radius: 30px;
   margin: 10px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
+  background-image: linear-gradient(90deg,
+    var(--blue1), var(--blue2), var(--blue3), var(--blue2), var(--blue1));
+  color: white;
   font-size: 2rem;
   font-weight: bold;
-  color: var(--white);
   animation: pop 0.4s ease-out forwards;
-  background-image: linear-gradient(90deg,
-    var(--blue1) 0%, var(--blue2) 35%, var(--blue3) 60%, var(--blue2) 85%, var(--blue1) 100%);
 }
 
 /* TAMPA SUPERIOR */
 .final-can::before {
   content: "";
   position: absolute;
+  top: -8px;
   left: 10px;
   right: 10px;
   height: 14px;
   border-radius: 999px;
   background: radial-gradient(circle at 50% 0,
     var(--white), #e5e7eb 40%, #9ca3af 70%, #4b5563 100%);
-  top: -8px;
 }
 
-/* LATA DA ANIMAÇÃO */
+/* LOGO ENTRE TAMPA E NÚMERO */
+.final-can img.ball-logo {
+  width: 55%;
+  margin-top: 18px; /* distância da tampa */
+  filter: drop-shadow(0 0 3px #000);
+}
+
+/* NÚMERO */
+.final-can .num {
+  margin-bottom: 15px;
+}
+
+/* LATAS DA ANIMAÇÃO */
 .spin-can {
   position: absolute;
   width: 65px;
   height: 120px;
   border-radius: 26px;
   opacity: 0;
-  font-size: 1.2rem;
+  background-image: linear-gradient(90deg,
+    var(--blue1), var(--blue2), var(--blue3), var(--blue2), var(--blue1));
+  animation: spin 0.3s linear forwards;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
   color: white;
-  animation: spin 0.3s linear forwards;
-  background-image: linear-gradient(90deg,
-    var(--blue1) 0%, var(--blue2) 35%, var(--blue3) 60%, var(--blue2) 85%, var(--blue1) 100%);
+  font-size: 1.2rem;
 }
 
+/* TAMPA DA LATINHA DA ANIMAÇÃO */
 .spin-can::before {
   content: "";
   position: absolute;
+  top: -6px;
   left: 8px;
   right: 8px;
   height: 12px;
   border-radius: 999px;
   background: radial-gradient(circle at 50% 0,
     var(--white), #e5e7eb 40%, #9ca3af 70%, #4b5563 100%);
-  top: -6px;
+}
+
+/* LOGO NA ANIMAÇÃO */
+.spin-can img.ball-logo {
+  width: 45%;
+  margin-top: 12px;
+  filter: drop-shadow(0 0 2px #000);
+}
+
+/* NÚMERO */
+.spin-can .num {
+  margin-bottom: 10px;
 }
 
 /* ANIMAÇÕES */
@@ -169,30 +194,41 @@ function tambor() {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.frequency.value = 120;
-    gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.20);
+    gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
     osc.connect(gain);
     gain.connect(audioCtx.destination);
     osc.start();
-    osc.stop(audioCtx.currentTime + 0.20);
+    osc.stop(audioCtx.currentTime + 0.2);
   } catch(e){}
 }
 
-/* ANIMAÇÃO */
+/* ANIMAÇÃO DAS LATAS */
 async function animacao(tempo) {
   const arena = document.getElementById("arena");
 
   const loop = setInterval(() => {
-    const lata = document.createElement("div");
-    lata.className = "spin-can";
-    lata.style.left = random(10, arena.clientWidth - 70) + "px";
-    lata.style.top = random(10, arena.clientHeight - 130) + "px";
-    lata.textContent = random(1, 99);
+    const div = document.createElement("div");
+    div.className = "spin-can";
 
-    arena.appendChild(lata);
+    const logo = document.createElement("img");
+    logo.src = "ball-logo.png";
+    logo.className = "ball-logo";
+
+    const num = document.createElement("div");
+    num.className = "num";
+    num.textContent = random(1, 99);
+
+    div.appendChild(logo);
+    div.appendChild(num);
+
+    div.style.left = random(10, arena.clientWidth - 80) + "px";
+    div.style.top  = random(10, arena.clientHeight - 130) + "px";
+
+    arena.appendChild(div);
     tambor();
 
-    setTimeout(() => lata.remove(), 260);
+    setTimeout(() => div.remove(), 260);
   }, 80);
 
   return new Promise(resolve => {
@@ -230,18 +266,28 @@ async function iniciar() {
   nums.forEach(n => {
     const lata = document.createElement("div");
     lata.className = "final-can";
-    lata.textContent = n;
+
+    const logo = document.createElement("img");
+    logo.src = "ball-logo.png";
+    logo.className = "ball-logo";
+
+    const num = document.createElement("div");
+    num.className = "num";
+    num.textContent = n;
+
+    lata.appendChild(logo);
+    lata.appendChild(num);
+
     arena.appendChild(lata);
   });
 
-  document.getElementById("retry").style.display = "block";
-  document.getElementById("back").style.display = "block";
+  document.getElementById("retry").style.display = "inline-block";
+  document.getElementById("back").style.display  = "inline-block";
 }
 
-/* BOTÃO SORTEAR DE NOVO */
+/* REFAZER SORTEIO */
 function sortearDeNovo() {
-  const params = window.location.search;
-  window.location.href = "resultado.html" + params;
+  window.location.href = "resultado.html" + window.location.search;
 }
 
 /* VOLTAR */
