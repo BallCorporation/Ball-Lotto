@@ -7,9 +7,12 @@
 
 <style>
 :root {
-  --ball-blue: #1140ff;
-  --ball-light-blue: #60a5fa;
-  --ball-white: #ffffff;
+  --ball-blue: #1154ff;
+  --ball-blue-dark: #0038a8;
+  --ball-blue-light: #4f8dff;
+  --can-silver: #e5e7eb;
+  --can-silver-dark: #9ca3af;
+  --white: #ffffff;
 }
 
 /* FULL SCREEN */
@@ -124,7 +127,7 @@ button {
   padding: 20px;
   background: #001226;
   border-radius: 12px;
-  min-height: 180px;
+  min-height: 190px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -132,95 +135,144 @@ button {
   overflow: hidden;
 }
 
-/* LATINHA FINAL (RESULTADO) */
+/* ---------------- LATINHA "REALISTA" (RESULTADO) ---------------- */
+
 .final-can {
-  width: 65px;
-  height: 95px;
-  border-radius: 18px;
-  background: linear-gradient(180deg, #1d4ed8 0%, #2563eb 40%, #1d4ed8 100%);
-  border: 2px solid var(--ball-light-blue);
-  box-shadow: 0 0 16px rgba(37,99,235,0.8);
+  position: relative;
+  width: 80px;
+  height: 130px;
+  border-radius: 26px;
+  margin: 6px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--ball-white);
+  color: var(--white);
   font-weight: bold;
-  font-size: 1.3rem;
-  position: relative;
-  margin: 6px;
+  font-size: 1.4rem;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.55);
   animation: pop 0.4s ease-out forwards;
+
+  /* corpo azul + textura de gotinhas */
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.28) 0, rgba(255,255,255,0.1) 20%, transparent 40%),
+    radial-gradient(circle at 60% 35%, rgba(255,255,255,0.35) 0, rgba(255,255,255,0.1) 22%, transparent 45%),
+    radial-gradient(circle at 40% 70%, rgba(255,255,255,0.25) 0, rgba(255,255,255,0.08) 22%, transparent 45%),
+    radial-gradient(circle at 70% 80%, rgba(255,255,255,0.3) 0, rgba(255,255,255,0.1) 20%, transparent 45%),
+    linear-gradient(90deg, #00308f 0%, #0f4fdc 40%, #4f8dff 60%, #0f4fdc 85%, #002f83 100%);
+  background-blend-mode: screen, screen, screen, screen, normal;
 }
 
-/* topo prateado da latinha final */
-.final-can::before {
-  content: "";
-  position: absolute;
-  top: 6px;
-  left: 8px;
-  right: 8px;
-  height: 10px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #f9fafb, #d1d5db, #f9fafb);
-  opacity: 0.9;
-}
-
-/* brilho lateral da latinha final */
+/* topo + base prateadas */
+.final-can::before,
 .final-can::after {
   content: "";
   position: absolute;
-  top: 18px;
-  bottom: 18px;
-  right: 6px;
-  width: 8px;
+  left: 8px;
+  right: 8px;
+  height: 14px;
   border-radius: 999px;
-  background: rgba(239,246,255,0.35);
+  background: radial-gradient(circle at 50% 0,
+      var(--white) 0,
+      var(--can-silver) 40%,
+      var(--can-silver-dark) 70%,
+      #4b5563 100%);
 }
 
-/* LATINHAS DA ANIMAÇÃO (SPIN) */
+/* topo */
+.final-can::before {
+  top: -7px;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.45);
+}
+
+/* base */
+.final-can::after {
+  bottom: -7px;
+  box-shadow: 0 -4px 4px rgba(0,0,0,0.5);
+}
+
+/* reflexo lateral */
+.final-can span.can-highlight {
+  pointer-events: none;
+  position: absolute;
+  top: 18px;
+  bottom: 20px;
+  right: 10px;
+  width: 10px;
+  border-radius: 999px;
+  background: linear-gradient(180deg,
+      rgba(255,255,255,0.4),
+      rgba(255,255,255,0.15),
+      rgba(255,255,255,0.35));
+  opacity: 0.9;
+}
+
+/* ---------------- LATINHA DA ANIMAÇÃO (SPIN) ---------------- */
+
 .spin-can {
   position: absolute;
-  width: 55px;
-  height: 85px;
-  border-radius: 16px;
-  background: linear-gradient(180deg, #1d4ed8 0%, #2563eb 40%, #1d4ed8 100%);
-  border: 1px solid var(--ball-light-blue);
-  box-shadow: 0 0 12px rgba(37,99,235,0.7);
+  width: 60px;
+  height: 110px;
+  border-radius: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--ball-white);
+  color: var(--white);
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   opacity: 0;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.6);
   animation: spinAnim 0.3s linear forwards;
+
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.22) 0, rgba(255,255,255,0.05) 22%, transparent 40%),
+    radial-gradient(circle at 60% 40%, rgba(255,255,255,0.25) 0, rgba(255,255,255,0.06) 22%, transparent 45%),
+    radial-gradient(circle at 40% 70%, rgba(255,255,255,0.2) 0, rgba(255,255,255,0.06) 22%, transparent 45%),
+    linear-gradient(90deg, #002b80 0%, #1552e0 40%, #4f8dff 60%, #1144ce 85%, #002866 100%);
+  background-blend-mode: screen, screen, screen, normal;
 }
 
-/* topo da latinha animada */
-.spin-can::before {
-  content: "";
-  position: absolute;
-  top: 5px;
-  left: 7px;
-  right: 7px;
-  height: 8px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #f9fafb, #d1d5db, #f9fafb);
-  opacity: 0.8;
-}
-
-/* brilho lateral da latinha animada */
+/* topo e base da latinha animada */
+.spin-can::before,
 .spin-can::after {
   content: "";
   position: absolute;
-  top: 16px;
-  bottom: 16px;
-  right: 5px;
-  width: 7px;
+  left: 7px;
+  right: 7px;
+  height: 11px;
   border-radius: 999px;
-  background: rgba(239,246,255,0.25);
+  background: radial-gradient(circle at 50% 0,
+      var(--white) 0,
+      var(--can-silver) 40%,
+      var(--can-silver-dark) 70%,
+      #4b5563 100%);
 }
 
-/* ANIMAÇÕES */
+/* topo */
+.spin-can::before {
+  top: -6px;
+}
+
+/* base */
+.spin-can::after {
+  bottom: -6px;
+}
+
+/* reflexo lateral da animada */
+.spin-can span.can-highlight {
+  pointer-events: none;
+  position: absolute;
+  top: 16px;
+  bottom: 18px;
+  right: 9px;
+  width: 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg,
+      rgba(255,255,255,0.35),
+      rgba(255,255,255,0.1),
+      rgba(255,255,255,0.28));
+}
+
+/* ANIMAÇÕES GERAIS */
 @keyframes pop {
   from { transform: scale(0.1); opacity: 0; }
   to   { transform: scale(1);   opacity: 1; }
@@ -270,7 +322,7 @@ button {
       <input id="max" type="number" min="1" max="100" value="100">
     </div>
 
-    <!-- BOLAS / LATINHAS SORTEADAS -->
+    <!-- BOLAS/LATAS SORTEADAS -->
     <div class="field-group" style="grid-column:span 4;margin-top:10px;">
       <label>Bolas sorteadas:</label>
     </div>
@@ -327,7 +379,7 @@ function playDrumHit(){
     osc.start();
     osc.stop(audioCtx.currentTime + 0.25);
   } catch(e){
-    // se não puder tocar som (bloqueio do navegador), apenas ignora
+    // se não conseguir tocar som (bloqueio do navegador), só ignora
   }
 }
 
@@ -353,12 +405,16 @@ function animateSpinShake(duration){
     c.className = "spin-can";
 
     const w = drum.clientWidth  || 300;
-    const h = drum.clientHeight || 180;
+    const h = drum.clientHeight || 190;
 
-    c.style.left = random(10, w-65) + "px";
-    c.style.top  = random(5,  h-90) + "px";
+    c.style.left = random(10, w-70) + "px";
+    c.style.top  = random(5,  h-110) + "px";
 
     c.textContent = random(1,99);
+
+    const hi = document.createElement("span");
+    hi.className = "can-highlight";
+    c.appendChild(hi);
 
     drum.appendChild(c);
     playDrumHit();
@@ -399,7 +455,6 @@ $("btn-sortear").onclick = async () => {
     alert("A duração da animação deve ser entre 1 e 15 segundos.");
     return;
   }
-  // impedir caso intervalo seja menor que qtd
   if ((max - min + 1) < qtd) {
     alert("O intervalo é menor que a quantidade de bolas.");
     return;
@@ -423,6 +478,11 @@ $("btn-sortear").onclick = async () => {
     const can = document.createElement("div");
     can.className = "final-can";
     can.textContent = n;
+
+    const hi = document.createElement("span");
+    hi.className = "can-highlight";
+    can.appendChild(hi);
+
     drum.appendChild(can);
   });
 };
