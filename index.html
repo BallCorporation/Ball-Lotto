@@ -5,60 +5,84 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Ball Corporation – Máquina de Sorteio</title>
 <style>
-:root {
-  --ball-blue: #1140ff;
-  --ball-light-blue: #6fa0ff;
-  --ball-white: #ffffff;
-  --ball-anim-duration: 0.6s;
-}
-body {
-  margin:0; font-family:Arial;
-  background:#000814; color:white;
-  display:flex; justify-content:center; align-items:center;
-  height:100vh; padding:20px;
-}
-.card {
-  background:#0f172a; border-radius:20px; padding:20px;
-  width:100%; max-width:500px;
-  border:1px solid #2a3b5f;
-}
+:root { --ball-blue:#1140ff; --ball-light-blue:#6fa0ff; --ball-white:#ffffff; }
+body { margin:0; font-family:Arial; background:#000814; color:white;
+       display:flex; justify-content:center; align-items:center; min-height:100vh; }
+.card { background:#0f172a; border-radius:20px; padding:20px; width:100%; max-width:620px;
+        border:1px solid #2a3b5f; }
 .header { display:flex; gap:10px; align-items:center; margin-bottom:20px; }
-.header img { height:50px; }
-form { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:15px;}
-input { padding:6px; border-radius:8px; border:1px solid #3a4b6f; background:#1e293b; color:white; }
-.actions { display:flex; gap:10px; margin-bottom:10px; }
-button {
-  flex:1; padding:10px; border-radius:8px; border:none; cursor:pointer;
-  font-weight:bold;
-}
+.header img { height:55px; }
+
+form { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+
+.field-group label { font-size:0.9rem; font-weight:bold; }
+
+.field { display:flex; flex-direction:column; }
+.field label { color:#9ca3af; font-size:0.75rem; }
+input { padding:7px; border-radius:8px; border:1px solid #3b4f71; background:#1e293b; color:white; }
+
+.actions { display:flex; gap:10px; margin-top:10px; }
+button { flex:1; padding:10px; border-radius:8px; border:none; cursor:pointer; font-weight:bold; }
 .btn-primary { background:#1140ff; color:white; }
-.btn-secondary { background:#1e293b; color:white; border:1px solid #475569; }
-.drum { min-height:80px; background:#001226; border-radius:12px; padding:10px;
-       display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
-.ball {
-  width:40px; height:40px; border-radius:50%;
-  background:radial-gradient(circle, white, #6fa0ff 40%, #1140ff 80%);
-  display:flex; align-items:center; justify-content:center;
-  font-weight:bold; animation:pop var(--ball-anim-duration) ease-out;
+.btn-secondary { background:#1e293b; border:1px solid #475569; color:white; }
+
+#drum { margin-top:20px; padding:20px; background:#001226; border-radius:12px;
+        min-height:150px; display:flex; justify-content:center; align-items:center;
+        position:relative; overflow:hidden; }
+
+/* ANIMAÇÕES */
+.final-ball {
+  width:60px; height:60px; border-radius:50%;
+  background:radial-gradient(circle, white, #93b7ff 40%, #1140ff 80%);
+  display:flex; justify-content:center; align-items:center;
+  font-size:1.3rem; font-weight:bold;
+  animation:pop 0.4s ease-out forwards;
+  margin:5px;
 }
-@keyframes pop {
-  from { transform:scale(0.5); opacity:0; }
-  to   { transform:scale(1); opacity:1; }
+@keyframes pop { from{transform:scale(0.1);opacity:0;} to{transform:scale(1);opacity:1;} }
+
+.spin-ball {
+  position:absolute; width:45px; height:45px; border-radius:50%;
+  background:radial-gradient(circle, white,#9ebeff 40%,#1140ff 80%);
+  display:flex; justify-content:center; align-items:center;
+  opacity:0; animation:spinAnim 0.3s linear forwards;
 }
+@keyframes spinAnim {
+  0% { opacity:0; transform:scale(0.3) rotate(0deg); }
+  50% { opacity:1; transform:scale(1.1) rotate(180deg); }
+  100%{ opacity:0; transform:scale(0.3) rotate(360deg); }
+}
+
+@keyframes shakeAnim {
+  0%{ transform:translate(0,0); }
+  25%{ transform:translate(5px,-5px); }
+  50%{ transform:translate(-5px,5px); }
+  75%{ transform:translate(5px,5px); }
+  100%{ transform:translate(0,0); }
+}
+.shake { animation:shakeAnim 0.13s infinite; }
+
 </style>
 </head>
 <body>
+
 <div class="card">
   <div class="header">
-    <img src="ball-logo.png"/>
+    <img src="ball-logo.png">
     <h2>Máquina de Sorteio</h2>
   </div>
 
-  <form>
-    <input id="min" type="number" value="1" min="1" max="100"/>
-    <input id="max" type="number" value="60" min="1" max="100"/>
-    <input id="qtd" type="number" value="6" min="1"/>
-    <input id="duracao" type="number" value="0.6" min="0.1" step="0.1"/>
+  <form id="config-form">
+    <div class="field-group" style="grid-column:span 4;"><label>Intervalo de:</label></div>
+
+    <div class="field"><label>De</label><input id="min" type="number" min="1" max="100" value="1"></div>
+    <div class="field"><label>Até</label><input id="max" type="number" min="1" max="100" value="100"></div>
+
+    <div class="field-group" style="grid-column:span 4;margin-top:10px;"><label>Bolas sorteadas:</label></div>
+    <div class="field"><input id="qtd" type="number" min="1" max="10" value="1"></div>
+
+    <div class="field-group" style="grid-column:span 4;margin-top:10px;"><label>Animação:</label></div>
+    <div class="field"><input id="duracao" type="number" min="1" max="15" value="3"></div>
   </form>
 
   <div class="actions">
@@ -66,32 +90,70 @@ button {
     <button class="btn-secondary" id="btn-limpar">Limpar</button>
   </div>
 
-  <div id="drum" class="drum"></div>
+  <div id="drum"></div>
 </div>
 
 <script>
 function $(id){ return document.getElementById(id); }
 
-$("btn-sortear").onclick = () => {
-  let min = parseInt($("min").value),
-      max = parseInt($("max").value),
-      qtd = parseInt($("qtd").value),
-      dur = parseFloat($("duracao").value);
-  document.documentElement.style.setProperty("--ball-anim-duration", dur+"s");
-  const nums=[], set=new Set();
+function random(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+function animateSpinShake(duration){
+  let drum=$("drum");
+  drum.innerHTML="";
+  drum.classList.add("shake");
+
+  let interval=setInterval(()=>{
+    let b=document.createElement("div");
+    b.className="spin-ball";
+    b.style.left = random(20, drum.clientWidth-60)+"px";
+    b.style.top  = random(20, drum.clientHeight-60)+"px";
+    b.textContent=random(1,99);
+    drum.appendChild(b);
+    setTimeout(()=>b.remove(),250);
+  },70);
+
+  return new Promise(res=>{
+    setTimeout(()=>{
+      clearInterval(interval);
+      drum.classList.remove("shake");
+      drum.innerHTML="";
+      res();
+    }, duration*1000);
+  });
+}
+
+$("btn-sortear").onclick = async ()=>{
+  let min=parseInt($("min").value);
+  let max=parseInt($("max").value);
+  let qtd=parseInt($("qtd").value);
+  let dur=parseInt($("duracao").value);
+
+  if(min>=max){ alert("Intervalo inválido."); return; }
+  if(qtd<1||qtd>10){ alert("Máximo 10 bolas."); return; }
+  if(dur<1||dur>15){ alert("Duração entre 1 e 15."); return; }
+
+  await animateSpinShake(dur);
+
+  let nums=[];
+  let used=new Set();
   while(nums.length<qtd){
-    let n=Math.floor(Math.random()*(max-min+1))+min;
-    if(!set.has(n)){ set.add(n); nums.push(n); }
+    let n=random(min,max);
+    if(!used.has(n)){ used.add(n); nums.push(n); }
   }
   nums.sort((a,b)=>a-b);
-  $("drum").innerHTML="";
+
+  let drum=$("drum");
   nums.forEach(n=>{
-    let b=document.createElement("div");
-    b.className="ball"; b.textContent=n;
-    $("drum").appendChild(b);
+    let fb=document.createElement("div");
+    fb.className="final-ball";
+    fb.textContent=n;
+    drum.appendChild(fb);
   });
 };
-$("btn-limpar").onclick = ()=>{ $("drum").innerHTML=""; };
+
+$("btn-limpar").onclick=()=>{ $("drum").innerHTML=""; };
 </script>
+
 </body>
 </html>
