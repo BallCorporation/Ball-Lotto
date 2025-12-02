@@ -24,8 +24,10 @@ body {
   height: 100vh;
   font-family: Arial, sans-serif;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 20px;
 }
 
 #arena {
@@ -42,7 +44,25 @@ body {
   overflow: hidden;
 }
 
-/* FORMATO DA LATA FINAL */
+/* BOTÃO SORTAR DE NOVO */
+#retry {
+  background: #c1121f;
+  color: white;
+  font-weight: bold;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: none;
+  transition: 0.2s;
+}
+
+#retry:hover {
+  background: #ff1e2b;
+}
+
+/* LATA FINAL */
 .final-can {
   position: relative;
   width: 90px;
@@ -60,7 +80,7 @@ body {
     var(--blue1) 0%, var(--blue2) 35%, var(--blue3) 60%, var(--blue2) 85%, var(--blue1) 100%);
 }
 
-/* SOMENTE TAMPA SUPERIOR DA LATA FINAL */
+/* TAMPA SUPERIOR */
 .final-can::before {
   content: "";
   position: absolute;
@@ -73,7 +93,7 @@ body {
   top: -8px;
 }
 
-/* LATA DA ANIMAÇÃO (SPIN) */
+/* LATA DA ANIMAÇÃO */
 .spin-can {
   position: absolute;
   width: 65px;
@@ -85,14 +105,11 @@ body {
   justify-content: center;
   align-items: center;
   color: white;
-
   animation: spin 0.3s linear forwards;
-
   background-image: linear-gradient(90deg,
     var(--blue1) 0%, var(--blue2) 35%, var(--blue3) 60%, var(--blue2) 85%, var(--blue1) 100%);
 }
 
-/* TAMPA SUPERIOR NA ANIMAÇÃO */
 .spin-can::before {
   content: "";
   position: absolute;
@@ -122,6 +139,7 @@ body {
 <body>
 
 <div id="arena"></div>
+<button id="retry" onclick="sortearDeNovo()">🔁 Sortear de novo</button>
 
 <script>
 function getParam(nome) {
@@ -133,7 +151,7 @@ function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-/* SOM DE TAMBOR */
+/* SOM */
 let audioCtx = null;
 function tambor() {
   try {
@@ -150,7 +168,7 @@ function tambor() {
   } catch(e){}
 }
 
-/* ANIMAÇÃO DAS LATAS */
+/* ANIMAÇÃO */
 async function animacao(tempo) {
   const arena = document.getElementById("arena");
 
@@ -205,6 +223,14 @@ async function iniciar() {
     lata.textContent = n;
     arena.appendChild(lata);
   });
+
+  document.getElementById("retry").style.display = "block";
+}
+
+/* BOTÃO SORTAR DE NOVO */
+function sortearDeNovo() {
+  const params = window.location.search;
+  window.location.href = "resultado.html" + params;
 }
 
 iniciar();
