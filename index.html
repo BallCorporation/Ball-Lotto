@@ -7,9 +7,9 @@
 
 <style>
 :root {
-  --ball-blue: #1154ff;
-  --ball-blue-dark: #0038a8;
-  --ball-blue-light: #4f8dff;
+  --can-blue-1: #0038a8;
+  --can-blue-2: #0f4fdc;
+  --can-blue-3: #4f8dff;
   --can-silver: #e5e7eb;
   --can-silver-dark: #9ca3af;
   --white: #ffffff;
@@ -111,10 +111,6 @@ button {
   color: white;
 }
 
-.btn-primary:hover {
-  filter: brightness(1.08);
-}
-
 .btn-secondary {
   background: #1e293b;
   border: 1px solid #475569;
@@ -135,7 +131,7 @@ button {
   overflow: hidden;
 }
 
-/* ---------------- LATINHA "REALISTA" (RESULTADO) ---------------- */
+/* ---------------- LATINHA FINAL (SEM BARRAS) ---------------- */
 
 .final-can {
   position: relative;
@@ -152,17 +148,16 @@ button {
   box-shadow: 0 12px 25px rgba(0,0,0,0.55);
   animation: pop 0.4s ease-out forwards;
 
-  /* corpo azul + textura de gotinhas */
   background-image:
-    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.28) 0, rgba(255,255,255,0.1) 20%, transparent 40%),
-    radial-gradient(circle at 60% 35%, rgba(255,255,255,0.35) 0, rgba(255,255,255,0.1) 22%, transparent 45%),
-    radial-gradient(circle at 40% 70%, rgba(255,255,255,0.25) 0, rgba(255,255,255,0.08) 22%, transparent 45%),
-    radial-gradient(circle at 70% 80%, rgba(255,255,255,0.3) 0, rgba(255,255,255,0.1) 20%, transparent 45%),
-    linear-gradient(90deg, #00308f 0%, #0f4fdc 40%, #4f8dff 60%, #0f4fdc 85%, #002f83 100%);
-  background-blend-mode: screen, screen, screen, screen, normal;
+    linear-gradient(90deg,
+      var(--can-blue-1) 0%,
+      var(--can-blue-2) 40%,
+      var(--can-blue-3) 60%,
+      var(--can-blue-2) 85%,
+      var(--can-blue-1) 100%);
 }
 
-/* topo + base prateadas */
+/* TAMPA E FUNDO */
 .final-can::before,
 .final-can::after {
   content: "";
@@ -190,23 +185,7 @@ button {
   box-shadow: 0 -4px 4px rgba(0,0,0,0.5);
 }
 
-/* reflexo lateral */
-.final-can span.can-highlight {
-  pointer-events: none;
-  position: absolute;
-  top: 18px;
-  bottom: 20px;
-  right: 10px;
-  width: 10px;
-  border-radius: 999px;
-  background: linear-gradient(180deg,
-      rgba(255,255,255,0.4),
-      rgba(255,255,255,0.15),
-      rgba(255,255,255,0.35));
-  opacity: 0.9;
-}
-
-/* ---------------- LATINHA DA ANIMAÇÃO (SPIN) ---------------- */
+/* ---------------- LATINHA DA ANIMAÇÃO (SEM BARRA LATERAL) ---------------- */
 
 .spin-can {
   position: absolute;
@@ -224,14 +203,14 @@ button {
   animation: spinAnim 0.3s linear forwards;
 
   background-image:
-    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.22) 0, rgba(255,255,255,0.05) 22%, transparent 40%),
-    radial-gradient(circle at 60% 40%, rgba(255,255,255,0.25) 0, rgba(255,255,255,0.06) 22%, transparent 45%),
-    radial-gradient(circle at 40% 70%, rgba(255,255,255,0.2) 0, rgba(255,255,255,0.06) 22%, transparent 45%),
-    linear-gradient(90deg, #002b80 0%, #1552e0 40%, #4f8dff 60%, #1144ce 85%, #002866 100%);
-  background-blend-mode: screen, screen, screen, normal;
+    linear-gradient(90deg,
+      var(--can-blue-1) 0%,
+      var(--can-blue-2) 40%,
+      var(--can-blue-3) 60%,
+      var(--can-blue-2) 85%,
+      var(--can-blue-1) 100%);
 }
 
-/* topo e base da latinha animada */
 .spin-can::before,
 .spin-can::after {
   content: "";
@@ -257,22 +236,7 @@ button {
   bottom: -6px;
 }
 
-/* reflexo lateral da animada */
-.spin-can span.can-highlight {
-  pointer-events: none;
-  position: absolute;
-  top: 16px;
-  bottom: 18px;
-  right: 9px;
-  width: 8px;
-  border-radius: 999px;
-  background: linear-gradient(180deg,
-      rgba(255,255,255,0.35),
-      rgba(255,255,255,0.1),
-      rgba(255,255,255,0.28));
-}
-
-/* ANIMAÇÕES GERAIS */
+/* ANIMAÇÕES */
 @keyframes pop {
   from { transform: scale(0.1); opacity: 0; }
   to   { transform: scale(1);   opacity: 1; }
@@ -307,22 +271,20 @@ button {
   </div>
 
   <form id="config-form">
-    <!-- INTERVALO -->
     <div class="field-group" style="grid-column:span 4;">
       <label>Intervalo de:</label>
     </div>
 
     <div class="field">
-      <label for="min">De</label>
+      <label>De</label>
       <input id="min" type="number" min="1" max="100" value="1">
     </div>
 
     <div class="field">
-      <label for="max">Até</label>
+      <label>Até</label>
       <input id="max" type="number" min="1" max="100" value="100">
     </div>
 
-    <!-- BOLAS/LATAS SORTEADAS -->
     <div class="field-group" style="grid-column:span 4;margin-top:10px;">
       <label>Bolas sorteadas:</label>
     </div>
@@ -331,7 +293,6 @@ button {
       <input id="qtd" type="number" min="1" max="10" value="1">
     </div>
 
-    <!-- ANIMAÇÃO -->
     <div class="field-group" style="grid-column:span 4;margin-top:10px;">
       <label>Animação:</label>
     </div>
@@ -339,14 +300,14 @@ button {
     <div class="field">
       <div style="display:flex;align-items:center;gap:6px;">
         <input id="duracao" type="number" min="1" max="15" value="3">
-        <span id="duracao-unidade" style="font-size:0.8rem; color:#e5e7eb;">segundos</span>
+        <span id="duracao-unidade">segundos</span>
       </div>
     </div>
   </form>
 
   <div class="actions">
-    <button class="btn-primary" id="btn-sortear" type="button">Sortear</button>
-    <button class="btn-secondary" id="btn-limpar" type="button">Limpar</button>
+    <button class="btn-primary" id="btn-sortear">Sortear</button>
+    <button class="btn-secondary" id="btn-limpar">Limpar</button>
   </div>
 
   <div id="drum"></div>
@@ -378,12 +339,10 @@ function playDrumHit(){
 
     osc.start();
     osc.stop(audioCtx.currentTime + 0.25);
-  } catch(e){
-    // se não conseguir tocar som (bloqueio do navegador), só ignora
-  }
+  } catch(e){}
 }
 
-// "segundo" / "segundos"
+// “segundo” / “segundos”
 const duracaoInput = $("duracao");
 const duracaoUnidade = $("duracao-unidade");
 
@@ -394,7 +353,7 @@ function atualizarUnidade(){
 duracaoInput.addEventListener("input", atualizarUnidade);
 atualizarUnidade();
 
-// animação com latinhas + tremida + som
+// Animação
 function animateSpinShake(duration){
   const drum = $("drum");
   drum.innerHTML = "";
@@ -404,17 +363,13 @@ function animateSpinShake(duration){
     const c = document.createElement("div");
     c.className = "spin-can";
 
-    const w = drum.clientWidth  || 300;
-    const h = drum.clientHeight || 190;
+    const w = drum.clientWidth;
+    const h = drum.clientHeight;
 
     c.style.left = random(10, w-70) + "px";
     c.style.top  = random(5,  h-110) + "px";
 
     c.textContent = random(1,99);
-
-    const hi = document.createElement("span");
-    hi.className = "can-highlight";
-    c.appendChild(hi);
 
     drum.appendChild(c);
     playDrumHit();
@@ -432,38 +387,20 @@ function animateSpinShake(duration){
   });
 }
 
-// clique em Sortear
+// Sorteio
 $("btn-sortear").onclick = async () => {
-  const min = parseInt($("min").value,10);
-  const max = parseInt($("max").value,10);
-  const qtd = parseInt($("qtd").value,10);
-  const dur = parseInt(duracaoInput.value,10);
+  const min = parseInt($("min").value);
+  const max = parseInt($("max").value);
+  const qtd = parseInt($("qtd").value);
+  const dur = parseInt($("duracao").value);
 
-  if (isNaN(min) || isNaN(max) || isNaN(qtd) || isNaN(dur)) {
-    alert("Preencha todos os campos corretamente.");
-    return;
-  }
-  if (min >= max) {
-    alert("O valor mínimo deve ser menor que o valor máximo.");
-    return;
-  }
-  if (qtd < 1 || qtd > 10) {
-    alert("A quantidade de bolas deve ser entre 1 e 10.");
-    return;
-  }
-  if (dur < 1 || dur > 15) {
-    alert("A duração da animação deve ser entre 1 e 15 segundos.");
-    return;
-  }
-  if ((max - min + 1) < qtd) {
-    alert("O intervalo é menor que a quantidade de bolas.");
-    return;
-  }
+  if (min >= max || qtd < 1 || dur < 1 || dur > 15) return;
 
   await animateSpinShake(dur);
 
   const usados = new Set();
   const nums = [];
+
   while (nums.length < qtd) {
     const n = random(min,max);
     if (!usados.has(n)) {
@@ -471,6 +408,7 @@ $("btn-sortear").onclick = async () => {
       nums.push(n);
     }
   }
+
   nums.sort((a,b)=>a-b);
 
   const drum = $("drum");
@@ -478,16 +416,11 @@ $("btn-sortear").onclick = async () => {
     const can = document.createElement("div");
     can.className = "final-can";
     can.textContent = n;
-
-    const hi = document.createElement("span");
-    hi.className = "can-highlight";
-    can.appendChild(hi);
-
     drum.appendChild(can);
   });
 };
 
-// clique em Limpar
+// Limpar
 $("btn-limpar").onclick = () => {
   $("drum").innerHTML = "";
 };
