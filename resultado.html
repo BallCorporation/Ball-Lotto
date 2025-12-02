@@ -42,7 +42,7 @@ body {
   overflow: hidden;
 }
 
-/* LATA FINAL */
+/* FORMATO DA LATA FINAL */
 .final-can {
   position: relative;
   width: 90px;
@@ -56,12 +56,11 @@ body {
   font-weight: bold;
   color: var(--white);
   animation: pop 0.4s ease-out forwards;
-
   background-image: linear-gradient(90deg,
     var(--blue1) 0%, var(--blue2) 35%, var(--blue3) 60%, var(--blue2) 85%, var(--blue1) 100%);
 }
 
-/* SOMENTE TAMPA SUPERIOR – a inferior foi REMOVIDA */
+/* SOMENTE TAMPA SUPERIOR DA LATA FINAL */
 .final-can::before {
   content: "";
   position: absolute;
@@ -74,7 +73,7 @@ body {
   top: -8px;
 }
 
-/* LATAS DA ANIMAÇÃO */
+/* LATA DA ANIMAÇÃO (SPIN) */
 .spin-can {
   position: absolute;
   width: 65px;
@@ -85,12 +84,25 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-
   color: white;
+
   animation: spin 0.3s linear forwards;
 
   background-image: linear-gradient(90deg,
     var(--blue1) 0%, var(--blue2) 35%, var(--blue3) 60%, var(--blue2) 85%, var(--blue1) 100%);
+}
+
+/* TAMPA SUPERIOR NA ANIMAÇÃO */
+.spin-can::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 12px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 50% 0,
+    var(--white), var(--silver1) 40%, var(--silver2) 70%, #4b5563 100%);
+  top: -6px;
 }
 
 /* ANIMAÇÕES */
@@ -121,6 +133,7 @@ function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+/* SOM DE TAMBOR */
 let audioCtx = null;
 function tambor() {
   try {
@@ -128,15 +141,16 @@ function tambor() {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.frequency.value = 120;
-    gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+    gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.20);
     osc.connect(gain);
     gain.connect(audioCtx.destination);
     osc.start();
-    osc.stop(audioCtx.currentTime + 0.2);
+    osc.stop(audioCtx.currentTime + 0.20);
   } catch(e){}
 }
 
+/* ANIMAÇÃO DAS LATAS */
 async function animacao(tempo) {
   const arena = document.getElementById("arena");
 
@@ -146,9 +160,11 @@ async function animacao(tempo) {
     lata.style.left = random(10, arena.clientWidth - 70) + "px";
     lata.style.top = random(10, arena.clientHeight - 130) + "px";
     lata.textContent = random(1, 99);
+
     arena.appendChild(lata);
     tambor();
-    setTimeout(() => lata.remove(), 250);
+
+    setTimeout(() => lata.remove(), 260);
   }, 80);
 
   return new Promise(res => {
@@ -160,6 +176,7 @@ async function animacao(tempo) {
   });
 }
 
+/* SORTEIO FINAL */
 async function iniciar() {
   const min = getParam("min");
   const max = getParam("max");
