@@ -66,7 +66,7 @@ body {
   gap: 12px;
 }
 
-/* LATINHAS (RESULTADO FINAL) */
+/* LATAS (RESULTADO FINAL) */
 .final-can {
   position: relative;
   width: 90px;
@@ -85,7 +85,7 @@ body {
   animation: pop 0.4s ease-out forwards;
 }
 
-/* TAMPA SUPERIOR */
+/* TAMPA */
 .final-can::before {
   content: "";
   position: absolute;
@@ -98,19 +98,19 @@ body {
     var(--white), #e5e7eb 40%, #9ca3af 70%, #4b5563 100%);
 }
 
-/* LOGO ACIMA DO NÚMERO (RESULTADO) */
+/* LOGO */
 .final-can img.ball-logo {
   width: 50%;
   margin-bottom: 6px;
   filter: drop-shadow(0 0 3px #000);
 }
 
-/* NÚMERO CENTRALIZADO */
+/* NUMERO */
 .final-can .num {
   margin: 0;
 }
 
-/* LATINHAS DA ANIMAÇÃO */
+/* ANIMAÇÃO */
 .spin-can {
   position: absolute;
   width: 65px;
@@ -128,7 +128,7 @@ body {
   font-size: 1.2rem;
 }
 
-/* TAMPA DA LATINHA DA ANIMAÇÃO */
+/* TAMPA */
 .spin-can::before {
   content: "";
   position: absolute;
@@ -141,19 +141,16 @@ body {
     var(--white), #e5e7eb 40%, #9ca3af 70%, #4b5563 100%);
 }
 
-/* LOGO ACIMA DO NÚMERO (ANIMAÇÃO) */
 .spin-can img.ball-logo {
   width: 45%;
   margin-bottom: 4px;
   filter: drop-shadow(0 0 2px #000);
 }
 
-/* NÚMERO NA ANIMAÇÃO */
 .spin-can .num {
   margin: 0;
 }
 
-/* ANIMAÇÕES */
 @keyframes spin {
   0% { opacity: 0; transform: scale(0.3) rotate(0deg); }
   50% { opacity: 1; transform: scale(1.1) rotate(180deg); }
@@ -172,7 +169,8 @@ body {
 <div id="arena"></div>
 
 <div id="botoes">
-  <button id="retry" class="btn" onclick="sortearDeNovo()">🔁 Sortear de novo</button>
+  <button id="retry" class="btn" onclick="sortearDeNovo()">🔁 Sortear</button>
+  <button id="reset" class="btn" onclick="resetar()">♻ Resetar números</button>
   <button id="back" class="btn" onclick="voltar()">⬅ Voltar</button>
 </div>
 
@@ -196,7 +194,6 @@ function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-/* SOM DE TAMBOR */
 function tambor() {
   try {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -212,7 +209,6 @@ function tambor() {
   } catch(e){}
 }
 
-/* ANIMAÇÃO DAS LATAS */
 async function animacao(tempo) {
   const arena = document.getElementById("arena");
 
@@ -249,7 +245,6 @@ async function animacao(tempo) {
   });
 }
 
-/* SORTEIO FINAL */
 async function iniciar() {
   const min   = getParamInt("min");
   const max   = getParamInt("max");
@@ -257,7 +252,6 @@ async function iniciar() {
   const tempo = getParamInt("tempo");
   noRepeatFlag = getParamInt("noRepeat") === 1 ? 1 : 0;
 
-  // carregar números já usados (se houver) quando "não repetir" estiver ativo
   if (noRepeatFlag) {
     const usadosStr = getParam("usados");
     if (usadosStr) {
@@ -272,14 +266,14 @@ async function iniciar() {
 
   const arena = document.getElementById("arena");
 
-  // verifica se ainda existem números suficientes
   const totalIntervalo = max - min + 1;
   const disponiveis = noRepeatFlag ? (totalIntervalo - usedSet.size) : totalIntervalo;
 
   if (noRepeatFlag && disponiveis < qtd) {
-    arena.textContent = "Não há números suficientes para sortear sem repetição. Volte e ajuste o intervalo ou desmarque a opção.";
+    arena.textContent = "Não há números suficientes.";
     document.getElementById("back").style.display = "inline-block";
     document.getElementById("retry").style.display = "none";
+    document.getElementById("reset").style.display = "inline-block";
     return;
   }
 
@@ -289,7 +283,7 @@ async function iniciar() {
   while (nums.length < qtd) {
     const n = random(min, max);
     if ((noRepeatFlag && usedSet.has(n)) || usadosRodada.has(n)) {
-      continue; // já foi usado antes ou nesta rodada
+      continue;
     }
     usadosRodada.add(n);
     nums.push(n);
@@ -315,7 +309,6 @@ async function iniciar() {
     arena.appendChild(lata);
   });
 
-  // atualiza o conjunto de usados para próximos sorteios (se "não repetir" estiver marcado)
   const params = new URLSearchParams(window.location.search);
 
   if (noRepeatFlag) {
@@ -329,19 +322,21 @@ async function iniciar() {
   nextSearch = "?" + params.toString();
 
   document.getElementById("retry").style.display = "inline-block";
+  document.getElementById("reset").style.display = "inline-block";
   document.getElementById("back").style.display  = "inline-block";
 }
 
-/* REFAZER SORTEIO */
 function sortearDeNovo() {
-  if (nextSearch) {
-    window.location.href = "resultado.html" + nextSearch;
-  } else {
-    window.location.href = "resultado.html" + window.location.search;
-  }
+  window.location.href = "resultado.html" + nextSearch;
 }
 
-/* VOLTAR */
+/* BOTÃO **RESETAR** */
+function resetar() {
+  const params = new URLSearchParams(window.location.search);
+  params.delete("usados");
+  window.location.href = "resultado.html?" + params.toString();
+}
+
 function voltar() {
   window.location.href = "index.html";
 }
