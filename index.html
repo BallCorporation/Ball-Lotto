@@ -25,6 +25,7 @@ body {
   border: 1px solid #2a3b5f;
   width: 100%;
   max-width: 700px;
+  box-sizing: border-box;
 }
 
 .header {
@@ -47,7 +48,7 @@ label {
   font-size: 0.85rem;
 }
 
-input {
+input[type="number"] {
   width: 120px;
   padding: 6px;
   border-radius: 8px;
@@ -67,27 +68,45 @@ button {
   font-weight: bold;
   cursor: pointer;
 }
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 0.9rem;
+}
 </style>
-
 </head>
-<body>
 
+<body>
 <div class="card">
   <div class="header">
-    <img src="ball-logo.png">
+    <img src="ball-logo.png" alt="Ball">
     <h2>Configuração do Sorteio</h2>
   </div>
 
   <form id="form">
-    <label>Intervalo de:</label>
-    <input id="min" type="number" min="1" max="100" value="1">
-    <input id="max" type="number" min="1" max="100" value="100">
+    <div>
+      <label>Intervalo de:</label><br>
+      <input id="min" type="number" min="1" max="100" value="1">
+      <input id="max" type="number" min="1" max="100" value="100">
+    </div>
 
-    <label>Latas sorteadas:</label>
-    <input id="qtd" type="number" min="1" max="10" value="1">
+    <div>
+      <label>Bolas sorteadas:</label><br>
+      <input id="qtd" type="number" min="1" max="10" value="1">
+    </div>
 
-    <label>Animação (segundos):</label>
-    <input id="tempo" type="number" min="1" max="15" value="3">
+    <div>
+      <label>Animação (segundos):</label><br>
+      <input id="tempo" type="number" min="1" max="15" value="3">
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="noRepeat">
+      <label for="noRepeat">Não repetir números ao sortear de novo</label>
+    </div>
 
     <button type="button" onclick="iniciar()">Sortear</button>
   </form>
@@ -95,13 +114,13 @@ button {
 
 <script>
 function iniciar() {
-  const min = document.getElementById("min").value;
-  const max = document.getElementById("max").value;
-  const qtd = document.getElementById("qtd").value;
+  const min   = document.getElementById("min").value;
+  const max   = document.getElementById("max").value;
+  const qtd   = document.getElementById("qtd").value;
   const tempo = document.getElementById("tempo").value;
+  const noRep = document.getElementById("noRepeat").checked ? 1 : 0;
 
-  const url = `resultado.html?min=${min}&max=${max}&qtd=${qtd}&tempo=${tempo}`;
-
+  const url = `resultado.html?min=${min}&max=${max}&qtd=${qtd}&tempo=${tempo}&noRepeat=${noRep}`;
   window.location.href = url;
 }
 </script>
