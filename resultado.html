@@ -75,7 +75,7 @@ body {
   margin: 10px;
   display: flex;
   flex-direction: column;
-  justify-content: center;      /* conteúdo centralizado verticalmente */
+  justify-content: center;
   align-items: center;
   background-image: linear-gradient(90deg,
     var(--blue1), var(--blue2), var(--blue3), var(--blue2), var(--blue1));
@@ -101,7 +101,7 @@ body {
 /* LOGO ACIMA DO NÚMERO (RESULTADO) */
 .final-can img.ball-logo {
   width: 50%;
-  margin-bottom: 6px;          /* espaço entre logo e número */
+  margin-bottom: 6px;
   filter: drop-shadow(0 0 3px #000);
 }
 
@@ -122,7 +122,7 @@ body {
   animation: spin 0.3s linear forwards;
   display: flex;
   flex-direction: column;
-  justify-content: center;      /* conteúdo centralizado verticalmente */
+  justify-content: center;
   align-items: center;
   color: white;
   font-size: 1.2rem;
@@ -177,17 +177,26 @@ body {
 </div>
 
 <script>
-function getParam(id) {
-  const url = new URLSearchParams(window.location.search);
-  return parseInt(url.get(id));
+let audioCtx = null;
+let noRepeatFlag = 0;
+let usedSet = new Set();
+let nextSearch = null;
+
+function getParam(name) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(name);
+}
+
+function getParamInt(name) {
+  const v = getParam(name);
+  return v === null ? null : parseInt(v);
 }
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-/* SOM */
-let audioCtx = null;
+/* SOM DE TAMBOR */
 function tambor() {
   try {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -242,23 +251,48 @@ async function animacao(tempo) {
 
 /* SORTEIO FINAL */
 async function iniciar() {
-  const min   = getParam("min");
-  const max   = getParam("max");
-  const qtd   = getParam("qtd");
-  const tempo = getParam("tempo");
+  const min   = getParamInt("min");
+  const max   = getParamInt("max");
+  const qtd   = getParamInt("qtd");
+  const tempo = getParamInt("tempo");
+  noRepeatFlag = getParamInt("noRepeat") === 1 ? 1 : 0;
+
+  // carregar números já usados (se houver) quando "não repetir" estiver ativo
+  if (noRepeatFlag) {
+    const usadosStr = getParam("usados");
+    if (usadosStr) {
+      usadosStr.split(",").forEach(v => {
+        const n = parseInt(v);
+        if (!isNaN(n)) usedSet.add(n);
+      });
+    }
+  }
 
   await animacao(tempo);
 
   const arena = document.getElementById("arena");
-  const usados = new Set();
+
+  // verifica se ainda existem números suficientes
+  const totalIntervalo = max - min + 1;
+  const disponiveis = noRepeatFlag ? (totalIntervalo - usedSet.size) : totalIntervalo;
+
+  if (noRepeatFlag && disponiveis < qtd) {
+    arena.textContent = "Não há números suficientes para sortear sem repetição. Volte e ajuste o intervalo ou desmarque a opção.";
+    document.getElementById("back").style.display = "inline-block";
+    document.getElementById("retry").style.display = "none";
+    return;
+  }
+
+  const usadosRodada = new Set();
   const nums = [];
 
   while (nums.length < qtd) {
     const n = random(min, max);
-    if (!usados.has(n)) {
-      usados.add(n);
-      nums.push(n);
+    if ((noRepeatFlag && usedSet.has(n)) || usadosRodada.has(n)) {
+      continue; // já foi usado antes ou nesta rodada
     }
+    usadosRodada.add(n);
+    nums.push(n);
   }
 
   nums.sort((a,b)=>a-b);
@@ -281,13 +315,30 @@ async function iniciar() {
     arena.appendChild(lata);
   });
 
+  // atualiza o conjunto de usados para próximos sorteios (se "não repetir" estiver marcado)
+  const params = new URLSearchParams(window.location.search);
+
+  if (noRepeatFlag) {
+    usadosRodada.forEach(n => usedSet.add(n));
+    const usadosStr = Array.from(usedSet).join(",");
+    params.set("usados", usadosStr);
+  } else {
+    params.delete("usados");
+  }
+
+  nextSearch = "?" + params.toString();
+
   document.getElementById("retry").style.display = "inline-block";
   document.getElementById("back").style.display  = "inline-block";
 }
 
 /* REFAZER SORTEIO */
 function sortearDeNovo() {
-  window.location.href = "resultado.html" + window.location.search;
+  if (nextSearch) {
+    window.location.href = "resultado.html" + nextSearch;
+  } else {
+    window.location.href = "resultado.html" + window.location.search;
+  }
 }
 
 /* VOLTAR */
