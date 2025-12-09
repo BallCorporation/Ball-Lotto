@@ -38,6 +38,10 @@ body {
   height: 60px;
 }
 
+.header h2 {
+  margin: 0;
+}
+
 form {
   margin-top: 20px;
   display: grid;
@@ -67,6 +71,10 @@ button {
   color: white;
   font-weight: bold;
   cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.08);
 }
 
 .checkbox-row {
@@ -105,7 +113,7 @@ button {
 
     <div class="checkbox-row">
       <input type="checkbox" id="noRepeat">
-      <label for="noRepeat">Não repetir números ao sortear de novo</label>
+      <label for="noRepeat">Não repetir números</label>
     </div>
 
     <button type="button" onclick="iniciar()">Sortear</button>
@@ -120,7 +128,38 @@ function iniciar() {
   const tempo = document.getElementById("tempo").value;
   const noRep = document.getElementById("noRepeat").checked ? 1 : 0;
 
-  const url = `resultado.html?min=${min}&max=${max}&qtd=${qtd}&tempo=${tempo}&noRepeat=${noRep}`;
+  // validações básicas
+  if (!min || !max || !qtd || !tempo) {
+    alert("Preencha todos os campos.");
+    return;
+  }
+
+  const minN = parseInt(min, 10);
+  const maxN = parseInt(max, 10);
+  const qtdN = parseInt(qtd, 10);
+  const tempoN = parseInt(tempo, 10);
+
+  if (isNaN(minN) || isNaN(maxN) || isNaN(qtdN) || isNaN(tempoN)) {
+    alert("Valores inválidos.");
+    return;
+  }
+
+  if (minN >= maxN) {
+    alert("O valor mínimo deve ser menor que o máximo.");
+    return;
+  }
+
+  if (qtdN < 1 || qtdN > 10) {
+    alert("A quantidade de bolas deve ser entre 1 e 10.");
+    return;
+  }
+
+  if (tempoN < 1 || tempoN > 15) {
+    alert("A animação deve ser entre 1 e 15 segundos.");
+    return;
+  }
+
+  const url = `resultado.html?min=${minN}&max=${maxN}&qtd=${qtdN}&tempo=${tempoN}&noRepeat=${noRep}`;
   window.location.href = url;
 }
 </script>
